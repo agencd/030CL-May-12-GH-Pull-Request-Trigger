@@ -30,7 +30,10 @@ on:
           - sandbox
           - prod
 env:
-  TF_WORKSPACE: ${{ inputs.environment }}
+  TF_WORKSPACE: ${{ inputs.environment || 'sandbox' }}
+  #TF_WORKSPACE: ${{ inputs.environment }}
+  # env.TF_WORKSPACE = inputs.environment
+  # env.TF_WORKSPACE = inputs.environment or sandbox
 jobs:
   freds_first_job:
     runs-on: ubuntu-latest #linux
@@ -54,8 +57,8 @@ jobs:
         run: terraform init
 
       - name: Terraform Plan
-        run: terraform plan -var-file ${{ inputs.environment }}.tfvars -out=tfplan
-        #run: terraform plan -var-file ${{ env.TF_WORKSPACE }}.tfvars
+        run: terraform plan -var-file ${{ env.TF_WORKSPACE }}.tfvars -out=tfplan
+        #run: terraform plan -var-file ${{ inputs.environment }}.tfvars -out=tfplan
 
       - name: Terraform apply
         if: ${{ inputs.run_apply }}
